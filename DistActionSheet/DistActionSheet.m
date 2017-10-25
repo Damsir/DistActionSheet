@@ -1,7 +1,7 @@
 /*
  作者：  吴定如 <wudr@dist.com.cn>
  文件：  DistActionSheet.h
- 版本：  1.0.0
+ 版本：  1.0.2
  地址：  https://github.com/Damsir/DistActionSheet
  描述：  类似微信ActionSheet控件,支持横竖屏切换,视图直接放置于keyWindow上
  */
@@ -225,7 +225,7 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
 
 - (void)dealloc {
     #ifdef DEBUG
-    NSLog(@"LPActionSheet dealloc");
+    NSLog(@"DistActionSheet dealloc");
     #endif
 }
 

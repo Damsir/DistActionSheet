@@ -1,12 +1,25 @@
 /*
  作者：  吴定如 <wudr@dist.com.cn>
  文件：  DistActionSheet.h
- 版本：  1.0.2
+ 版本：  1.0.3
  地址：  https://github.com/Damsir/DistActionSheet
  描述：  类似微信ActionSheet控件,支持横竖屏切换,视图直接放置于keyWindow上
+ 更新：  适配iPhone X系列
  */
 
 #import "DistActionSheet.h"
+
+#define SH_iPhoneX_Serial \
+({BOOL iPhoneXSeries = NO; \
+if (UIDevice.currentDevice.userInterfaceIdiom != UIUserInterfaceIdiomPhone) { \
+(iPhoneXSeries); \
+} \
+if (@available(iOS 11.0, *)) { \
+iPhoneXSeries = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bottom > 0.0; \
+} \
+(iPhoneXSeries);})
+
+#define kCancelRowHeight (SH_iPhoneX_Serial ? 48.0f + 34.0f : 48.0f)
 
 static const CGFloat kRowHeight = 48.0f;
 static const CGFloat kRowLineHeight = 0.5f;
@@ -64,7 +77,8 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
         
         _actionSheetView = [[UIView alloc] initWithFrame:CGRectMake(0, self.frame.size.height, self.frame.size.width, 0)];
         _actionSheetView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-        _actionSheetView.backgroundColor = [UIColor colorWithRed:238.0f/255.0f green:238.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
+        //        _actionSheetView.backgroundColor = [UIColor colorWithRed:238.0f/255.0f green:238.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
+        _actionSheetView.backgroundColor = [UIColor colorWithRed:235.0f/255.0f green:235.0f/255.0f blue:235.0f/255.0f alpha:1.0f];
         [self addSubview:_actionSheetView];
         
         UIImage *normalImage = [self imageWithColor:[UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:1.0f]];
@@ -130,7 +144,8 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
             actionSheetHeight += kSeparatorHeight;
             
             UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            cancelButton.frame = CGRectMake(0, actionSheetHeight, self.frame.size.width, kRowHeight);
+            //            cancelButton.frame = CGRectMake(0, actionSheetHeight, self.frame.size.width, kRowHeight);
+            cancelButton.frame = CGRectMake(0, actionSheetHeight, self.frame.size.width, kCancelRowHeight);
             cancelButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
             cancelButton.tag = 0;
             cancelButton.titleLabel.font = [UIFont systemFontOfSize:kButtonTitleFontSize];
@@ -141,7 +156,13 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
             [cancelButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
             [_actionSheetView addSubview:cancelButton];
             
-            actionSheetHeight += kRowHeight;
+            //            actionSheetHeight += kRowHeight;
+            actionSheetHeight += kCancelRowHeight;
+            
+            if (SH_iPhoneX_Serial) {
+                // 适配iPhoneX系列
+                cancelButton.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 25, 0);
+            }
         }
         
         _actionSheetView.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, actionSheetHeight);
@@ -224,9 +245,10 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
 }
 
 - (void)dealloc {
-    #ifdef DEBUG
+#ifdef DEBUG
     NSLog(@"DistActionSheet dealloc");
-    #endif
+#endif
 }
 
 @end
+

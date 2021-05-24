@@ -1,13 +1,27 @@
 /*
- 作者：  吴定如 <wudr@dist.com.cn>
+ 作者：  吴定如 <75081647@qq.com>
  文件：  DistActionSheet.h
- 版本：  1.0.3
+ 版本：  1.0.4
  地址：  https://github.com/Damsir/DistActionSheet
  描述：  类似微信ActionSheet控件,支持横竖屏切换,视图直接放置于keyWindow上
- 更新：  适配iPhone X系列
+ 更新：  适配iPhone X系列,圆角,高度等
  */
 
 #import "DistActionSheet.h"
+
+//static inline BOOL isIPhoneXSeries() {
+//    BOOL iPhoneXSeries = NO;
+//    if (UIDevice.currentDevice.userInterfaceIdiom != UIUserInterfaceIdiomPhone) {
+//        return iPhoneXSeries;
+//    }
+//    if (@available(iOS 11.0, *)) {
+//        UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
+//        if (mainWindow.safeAreaInsets.bottom > 0.0) {
+//            iPhoneXSeries = YES;
+//        }
+//    }
+//    return iPhoneXSeries;
+//}
 
 #define SH_iPhoneX_Serial \
 ({BOOL iPhoneXSeries = NO; \
@@ -21,10 +35,11 @@ iPhoneXSeries = [[UIApplication sharedApplication] delegate].window.safeAreaInse
 
 #define kCancelRowHeight (SH_iPhoneX_Serial ? 48.0f + 34.0f : 48.0f)
 
-static const CGFloat kRowHeight = 48.0f;
-static const CGFloat kRowLineHeight = 0.5f;
-static const CGFloat kSeparatorHeight = 6.0f;
-static const CGFloat kTitleFontSize = 13.0f;
+//static const CGFloat kRowHeight = 48.0f;
+static const CGFloat kRowHeight = 60.0f;
+static const CGFloat kRowLineHeight = 1.f;
+static const CGFloat kSeparatorHeight = 8.0f;
+static const CGFloat kTitleFontSize = 15.0f;
 static const CGFloat kButtonTitleFontSize = 18.0f;
 static const NSTimeInterval kAnimateDuration = 0.3f;
 
@@ -77,8 +92,9 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
         
         _actionSheetView = [[UIView alloc] initWithFrame:CGRectMake(0, self.frame.size.height, self.frame.size.width, 0)];
         _actionSheetView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-        //        _actionSheetView.backgroundColor = [UIColor colorWithRed:238.0f/255.0f green:238.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
-        _actionSheetView.backgroundColor = [UIColor colorWithRed:235.0f/255.0f green:235.0f/255.0f blue:235.0f/255.0f alpha:1.0f];
+//        _actionSheetView.backgroundColor = [UIColor colorWithRed:238.0f/255.0f green:238.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
+//        _actionSheetView.backgroundColor = [UIColor colorWithRed:235.0f/255.0f green:235.0f/255.0f blue:235.0f/255.0f alpha:1.0f];
+        _actionSheetView.backgroundColor = [UIColor colorWithRed:247.0f/255.0f green:247.0f/255.0f blue:247.0f/255.0f alpha:1.0f];
         [self addSubview:_actionSheetView];
         
         UIImage *normalImage = [self imageWithColor:[UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:1.0f]];
@@ -87,7 +103,8 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
         if (title && title.length > 0) {
             actionSheetHeight += kRowLineHeight;
             
-            CGFloat titleHeight = ceil([title boundingRectWithSize:CGSizeMake(self.frame.size.width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:kTitleFontSize]} context:nil].size.height) + 15*2;
+            CGFloat titleHeight = ceil([title boundingRectWithSize:CGSizeMake(self.frame.size.width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:kTitleFontSize]} context:nil].size.height) + 20*2;
+            titleHeight = titleHeight > kRowHeight ? titleHeight : kRowHeight;
             
             UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, actionSheetHeight, self.frame.size.width, titleHeight)];
             titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -100,24 +117,6 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
             [_actionSheetView addSubview:titleLabel];
             
             actionSheetHeight += titleHeight;
-        }
-        
-        if (destructiveButtonTitle && destructiveButtonTitle.length > 0) {
-            actionSheetHeight += kRowLineHeight;
-            
-            UIButton *destructiveButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            destructiveButton.frame = CGRectMake(0, actionSheetHeight, self.frame.size.width, kRowHeight);
-            destructiveButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-            destructiveButton.tag = -1;
-            destructiveButton.titleLabel.font = [UIFont systemFontOfSize:kButtonTitleFontSize];
-            [destructiveButton setTitle:destructiveButtonTitle forState:UIControlStateNormal];
-            [destructiveButton setTitleColor:[UIColor colorWithRed:230.0f/255.0f green:66.0f/255.0f blue:66.0f/255.0f alpha:1.0f] forState:UIControlStateNormal];
-            [destructiveButton setBackgroundImage:normalImage forState:UIControlStateNormal];
-            [destructiveButton setBackgroundImage:highlightedImage forState:UIControlStateHighlighted];
-            [destructiveButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
-            [_actionSheetView addSubview:destructiveButton];
-            
-            actionSheetHeight += kRowHeight;
         }
         
         if (otherButtonTitles && [otherButtonTitles count] > 0) {
@@ -140,12 +139,30 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
             }
         }
         
+        if (destructiveButtonTitle && destructiveButtonTitle.length > 0) {
+            actionSheetHeight += kRowLineHeight;
+            
+            UIButton *destructiveButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            destructiveButton.frame = CGRectMake(0, actionSheetHeight, self.frame.size.width, kRowHeight);
+            destructiveButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+            destructiveButton.tag = -1;
+            destructiveButton.titleLabel.font = [UIFont systemFontOfSize:kButtonTitleFontSize];
+            [destructiveButton setTitle:destructiveButtonTitle forState:UIControlStateNormal];
+            [destructiveButton setTitleColor:[UIColor colorWithRed:230.0f/255.0f green:66.0f/255.0f blue:66.0f/255.0f alpha:1.0f] forState:UIControlStateNormal];
+            [destructiveButton setBackgroundImage:normalImage forState:UIControlStateNormal];
+            [destructiveButton setBackgroundImage:highlightedImage forState:UIControlStateHighlighted];
+            [destructiveButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
+            [_actionSheetView addSubview:destructiveButton];
+            
+            actionSheetHeight += kRowHeight;
+        }
+        
         if (cancelButtonTitle && cancelButtonTitle.length > 0) {
             actionSheetHeight += kSeparatorHeight;
             
             UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            //            cancelButton.frame = CGRectMake(0, actionSheetHeight, self.frame.size.width, kRowHeight);
-            cancelButton.frame = CGRectMake(0, actionSheetHeight, self.frame.size.width, kCancelRowHeight);
+            cancelButton.frame = CGRectMake(0, actionSheetHeight, self.frame.size.width, kRowHeight);
+//            cancelButton.frame = CGRectMake(0, actionSheetHeight, self.frame.size.width, kCancelRowHeight);
             cancelButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
             cancelButton.tag = 0;
             cancelButton.titleLabel.font = [UIFont systemFontOfSize:kButtonTitleFontSize];
@@ -156,16 +173,18 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
             [cancelButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
             [_actionSheetView addSubview:cancelButton];
             
-            //            actionSheetHeight += kRowHeight;
-            actionSheetHeight += kCancelRowHeight;
+            actionSheetHeight += kRowHeight;
+//            actionSheetHeight += kCancelRowHeight;
             
-            if (SH_iPhoneX_Serial) {
-                // 适配iPhoneX系列
-                cancelButton.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 25, 0);
-            }
+//            if (SH_iPhoneX_Serial) {
+//                // 适配iPhoneX系列
+//                cancelButton.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 25, 0);
+//            }
         }
         
         _actionSheetView.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, actionSheetHeight);
+        // 圆角
+        [self addCornerRadius:15.0 corners:UIRectCornerTopLeft | UIRectCornerTopRight view:_actionSheetView];
     }
     
     return self;
@@ -196,7 +215,11 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
             }
         }
         
-        [UIView animateWithDuration:kAnimateDuration delay:0 usingSpringWithDamping:0.7f initialSpringVelocity:0.7f options:UIViewAnimationOptionCurveEaseInOut animations:^{
+//        [UIView animateWithDuration:kAnimateDuration delay:0 usingSpringWithDamping:0.7f initialSpringVelocity:0.7f options:UIViewAnimationOptionCurveEaseInOut animations:^{
+//            self.backgroundView.alpha = 1.0f;
+//            self.actionSheetView.frame = CGRectMake(0, self.frame.size.height-self.actionSheetView.frame.size.height, self.frame.size.width, self.actionSheetView.frame.size.height);
+//        } completion:nil];
+        [UIView animateWithDuration:kAnimateDuration delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.backgroundView.alpha = 1.0f;
             self.actionSheetView.frame = CGRectMake(0, self.frame.size.height-self.actionSheetView.frame.size.height, self.frame.size.width, self.actionSheetView.frame.size.height);
         } completion:nil];
@@ -242,6 +265,24 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
     UIGraphicsEndImageContext();
     
     return image;
+}
+
+/**
+ 设置一个普通圆角(圆角位置)
+ 
+ @param radius 圆角半径
+ @param corners 圆角位置
+ */
+- (void)addCornerRadius:(CGFloat)radius corners:(UIRectCorner)corners view:(UIView *)view {
+    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:view.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(radius, radius)];
+    CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
+//    maskLayer.frame = self.bounds;
+    maskLayer.path = maskPath.CGPath;
+    view.layer.mask = maskLayer;
+    
+    // 提高性能
+    view.layer.shouldRasterize = YES;
+    view.layer.rasterizationScale = [UIScreen mainScreen].scale;
 }
 
 - (void)dealloc {

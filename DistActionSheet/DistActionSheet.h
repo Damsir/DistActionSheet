@@ -1,10 +1,10 @@
 /*
- 作者：  吴定如 <wudr@dist.com.cn>
+ 作者：  吴定如 <75081647@qq.com>
  文件：  DistActionSheet.h
- 版本：  1.0.3
+ 版本：  1.0.4
  地址：  https://github.com/Damsir/DistActionSheet
  描述：  类似微信ActionSheet控件,支持横竖屏切换,视图直接放置于keyWindow上
- 更新：  适配iPhone X系列
+ 更新：  适配iPhone X系列,圆角,高度等
  */
 
 #import <UIKit/UIKit.h>

@@ -37,7 +37,7 @@ iPhoneXSeries = [[UIApplication sharedApplication] delegate].window.safeAreaInse
 
 //static const CGFloat kRowHeight = 48.0f;
 static const CGFloat kRowHeight = 60.0f;
-static const CGFloat kRowLineHeight = 1.f;
+static const CGFloat kRowLineHeight = 1.0f;
 static const CGFloat kSeparatorHeight = 8.0f;
 static const CGFloat kTitleFontSize = 16.0f;
 static const CGFloat kButtonTitleFontSize = 19.0f;
@@ -93,7 +93,7 @@ static const NSTimeInterval kAnimateDuration = 0.3f;
         _actionSheetView = [[UIView alloc] initWithFrame:CGRectMake(0, self.frame.size.height, self.frame.size.width, 0)];
         _actionSheetView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
 //        _actionSheetView.backgroundColor = [UIColor colorWithRed:238.0f/255.0f green:238.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
-//        _actionSheetView.backgroundColor = [UIColor colorWithRed:235.0f/255.0f green:235.0f/255.0f blue:235.0f/255.0f alpha:1.0f];
+//        _actionSheetView.backgroundColor = [UIColor colorWithRed:245.0f/255.0f green:245.0f/255.0f blue:245.0f/255.0f alpha:1.0f];
         _actionSheetView.backgroundColor = [UIColor colorWithRed:247.0f/255.0f green:247.0f/255.0f blue:247.0f/255.0f alpha:1.0f];
         [self addSubview:_actionSheetView];
         

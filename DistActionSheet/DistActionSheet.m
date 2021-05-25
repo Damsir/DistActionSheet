@@ -1,7 +1,7 @@
 /*
  作者：  吴定如 <75081647@qq.com>
  文件：  DistActionSheet.h
- 版本：  1.0.4
+ 版本：  1.0.5
  地址：  https://github.com/Damsir/DistActionSheet
  描述：  类似微信ActionSheet控件,支持横竖屏切换,视图直接放置于keyWindow上
  更新：  适配iPhone X系列,圆角,高度等
@@ -39,8 +39,8 @@ iPhoneXSeries = [[UIApplication sharedApplication] delegate].window.safeAreaInse
 static const CGFloat kRowHeight = 60.0f;
 static const CGFloat kRowLineHeight = 1.f;
 static const CGFloat kSeparatorHeight = 8.0f;
-static const CGFloat kTitleFontSize = 15.0f;
-static const CGFloat kButtonTitleFontSize = 18.0f;
+static const CGFloat kTitleFontSize = 16.0f;
+static const CGFloat kButtonTitleFontSize = 19.0f;
 static const NSTimeInterval kAnimateDuration = 0.3f;
 
 @interface DistActionSheet ()
